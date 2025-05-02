@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploading MP3-files</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .upload-container {
+            border: 2px dashed #000000;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .upload-btn {
+            background-color: #fe00c3;
+            color: rgb(25, 0, 255);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+        #file-info {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        #progress-bar {
+            width: 100%;
+            background-color: #f3f3f300;
+            margin-top: 20px;
+            display: none;
+        }
+        #progress {
+            width: 0%;
+            height: 30px;
+            background-color: #e100ff;
+            text-align: center;
+            line-height: 30px;
+            color: rgba(0, 255, 0, 0.808);
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload</h1>
+    <p>Pick MP3-files</p>
+    
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <div class="upload-container">
+            <input type="file" id="mp3file" name="mp3file" accept=".mp3,audio/mp3" required>
+            <p>OROROROROROR</p>
+        </div>
+        <div id="file-info"></div>
+        
+        <div id="progress-bar">
+            <div id="progress">0%</div>
+        </div>
+        
+        <button type="submit" class="upload-btn">Загрузить файл</button>
+    </form>
+
+    <script>
+        // Отображение имени выбранного файла
+        document.getElementById('mp3file').addEventListener('change', function(e) {
+            const fileInfo = document.getElementById('file-info');
+            if (this.files.length > 0) {
+                fileInfo.textContent = 'Выбран файл: ' + this.files[0].name;
+            } else {
+                fileInfo.textContent = '';
+            }
+        });
+
+        // Обработка перетаскивания файлов
+        const uploadContainer = document.querySelector('.upload-container');
+        
+        uploadContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = '#4CAF50';
+            uploadContainer.style.backgroundColor = '#f0fff0';
+        });
+        
+        uploadContainer.addEventListener('dragleave', () => {
+            uploadContainer.style.borderColor = '#ccc';
+            uploadContainer.style.backgroundColor = '';
+        });
+        
+        uploadContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = '#ccc';
+            uploadContainer.style.backgroundColor = '';
+            
+            const fileInput = document.getElementById('mp3file');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                document.getElementById('file-info').textContent = 'Выбран файл: ' + e.dataTransfer.files[0].name;
+            }
+        });
+
+        // Имитация прогресса загрузки (в реальном проекте нужно использовать AJAX/Fetch)
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const progressBar = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            
+            progressBar.style.display = 'block';
+            
+            let percent = 0;
+            const interval = setInterval(() => {
+                percent += 5;
+                progress.style.width = percent + '%';
+                progress.textContent = percent + '%';
+                
+                if (percent >= 100) {
+                    clearInterval(interval);
+                    alert('ХУЙ НАВАЛЬНОГО!');
+                    progressBar.style.display = 'none';
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
